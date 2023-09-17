@@ -1,0 +1,32 @@
+server:
+  port: 8001
+
+
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hararoo
+    username: root
+    password: root
+  jpa:
+    hibernate.ddl-auto: update
+    generate-ddl: true
+    show-sql: true
+
+aws:
+  cloud:
+    credentials:
+      access-key: AKIASWWNW6DR7NMKWVU3
+      secret-key: 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
+      url: https://palmland.s3.eu-north-1.amazonaws.com
+    region:
+      static: eu-north-1
+    stack:
+      auto: false
+upload:
+  path: src/main/resources/images
+
+bezkoder:
+  app:
+    jwtSecret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    jwtExpirationMs: 86400000
