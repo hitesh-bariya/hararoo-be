@@ -30,7 +30,6 @@ public class AdminController {
 		log.info("Calling Contoller for jobPost mrthod");
 		
 		return ResponseVO.builder().status(201).body(jobService.saveJob(jobRequestDTO)).build();
-		
 	}
 
 	@PutMapping("/job-post-update")
