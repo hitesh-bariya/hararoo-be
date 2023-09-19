@@ -60,6 +60,7 @@ public class AdminController {
 	public ResponseVO<?> getAllActiveJobs(@RequestParam(defaultValue = "0") Integer pageNo,
 			@RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "jobId") String sortBy) {
 		log.info("Calling Contoller for getAllActivemJobs mrthod");
+		
 		return ResponseVO.builder().status(201).body(jobService.getAllActiveJobData(pageNo, pageSize, sortBy)).build();
 	}
 }
