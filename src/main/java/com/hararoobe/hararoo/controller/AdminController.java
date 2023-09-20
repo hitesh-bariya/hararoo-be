@@ -53,7 +53,7 @@ public class AdminController {
 			@RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "jobId") String sortBy) {
 		log.info("Calling Contoller for getAllJobs mrthod");
 		
-		return ResponseVO.builder().status(201).body(jobService.getAllJobData(pageNo, pageSize, sortBy)).build();
+		return ResponseVO.builder()kjkj.status(201).body(jobService.getAllJobData(pageNo, pageSize, sortBy)).build();
 	}
 
 	@GetMapping("/all-active-jobs")
