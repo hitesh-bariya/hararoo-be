@@ -1,5 +1,7 @@
 package com.hararoobe.hararoo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,27 +42,25 @@ public class AdminController {
 	}
 
 	@GetMapping("/update-job-status")
-	public ResponseVO<?> updateJobStatus(@RequestParam("status") Long jobId,
+	public ResponseVO<JobDataDTO> updateJobStatus(@RequestParam("status") Long jobId,
 			@RequestParam("status") boolean status) {
-		log.info("Calling Contoller for updateJobStatus mrthod");
-		
-		return ResponseVO.builder().status(201).body(jobService.updateJobStatus(jobId, status)).build();
+		log.info("Calling Contoller for updateJobStatus method");
+		return jobService.updateJobStatus(jobId, status);
 		
 	}
 
 	@GetMapping("/all-jobs")
-	public ResponseVO<?> getAllJobs(@RequestParam(defaultValue = "0") Integer pageNo,
+	public ResponseVO<List<JobDataDTO>> getAllJobs(@RequestParam(defaultValue = "0") Integer pageNo,
 			@RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "jobId") String sortBy) {
 		log.info("Calling Contoller for getAllJobs mrthod");
 		
-		return ResponseVO.builder().status(201).body(jobService.getAllJobData(pageNo, pageSize, sortBy)).build();
+		return jobService.getAllJobData(pageNo, pageSize, sortBy);
 	}
 
 	@GetMapping("/all-active-jobs")
 	public ResponseVO<?> getAllActiveJobs(@RequestParam(defaultValue = "0") Integer pageNo,
 			@RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "jobId") String sortBy) {
 		log.info("Calling Contoller for getAllActivemJobs mrthod");
-		
 		return ResponseVO.builder().status(201).body(jobService.getAllActiveJobData(pageNo, pageSize, sortBy)).build();
 	}
 }

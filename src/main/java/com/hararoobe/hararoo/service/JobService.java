@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hararoobe.hararoo.model.JobApplyDTO;
 import com.hararoobe.hararoo.model.JobApplyResponseDTO;
 import com.hararoobe.hararoo.model.JobDataDTO;
+import com.hararoobe.hararoo.model.ResponseVO;
 
 
 public interface JobService {
@@ -15,11 +16,11 @@ public interface JobService {
 	
 	public JobDataDTO updateJob(JobDataDTO jobRequestDTO);
 	
-	public JobDataDTO updateJobStatus(Long jobId,boolean jobStatus);
+	public ResponseVO<JobDataDTO> updateJobStatus(Long jobId,boolean jobStatus);
 	
-	List<JobDataDTO> getAllJobData(Integer pageNo,Integer pageSize,String sortBy);
+	ResponseVO<List<JobDataDTO>> getAllJobData(Integer pageNo,Integer pageSize,String sortBy);
 	
-	List<JobDataDTO> getAllActiveJobData(Integer pageNo,Integer pageSize,String sortBy);
+	ResponseVO<List<JobDataDTO>> getAllActiveJobData(Integer pageNo,Integer pageSize,String sortBy);
 	
 	public JobApplyResponseDTO saveJobApplyData(JobApplyDTO jobApplyDTO,MultipartFile resumeFile);
 }

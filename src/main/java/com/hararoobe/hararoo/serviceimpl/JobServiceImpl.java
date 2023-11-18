@@ -30,6 +30,7 @@ import com.hararoobe.hararoo.enums.ERole;
 import com.hararoobe.hararoo.model.JobApplyDTO;
 import com.hararoobe.hararoo.model.JobApplyResponseDTO;
 import com.hararoobe.hararoo.model.JobDataDTO;
+import com.hararoobe.hararoo.model.ResponseVO;
 import com.hararoobe.hararoo.repository.DocumentDataRepository;
 import com.hararoobe.hararoo.repository.JobDataRepository;
 import com.hararoobe.hararoo.repository.RoleRepository;
@@ -90,13 +91,25 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public JobDataDTO updateJobStatus(Long jobId, boolean jobStatus) {
-
-		return null;
+	public ResponseVO<JobDataDTO> updateJobStatus(Long jobId, boolean jobStatus) {
+		ResponseVO<JobDataDTO> response = new ResponseVO<JobDataDTO>();
+		Optional<JobData> jobData=jobDataRepository.findById(jobId);
+		if(jobData.isPresent()) {
+			JobData job=jobData.get();
+			job.setStatus(true);
+			jobDataRepository.save(job);
+			response.setStatus(200);
+			response.setMessage("Job status updated");
+		}else {
+			response.setStatus(200);
+			response.setMessage("Job not found.");
+		}
+		return response;
 	}
 
 	@Override
-	public List<JobDataDTO> getAllJobData(Integer pageNo, Integer pageSize, String sortBy) {
+	public ResponseVO<List<JobDataDTO>> getAllJobData(Integer pageNo, Integer pageSize, String sortBy) {
+		ResponseVO<List<JobDataDTO>> response=new ResponseVO<List<JobDataDTO>>();
 		List<JobDataDTO> responseData = new ArrayList<>();
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
 		Page<JobData> pagedResult = jobDataRepository.findAll(paging);
@@ -107,11 +120,14 @@ public class JobServiceImpl implements JobService {
 				responseData.add(jobDataDTO);
 			}
 		}
-		return responseData;
+		response.setStatus(200);
+		response.setBody(responseData);
+		return response;
 	}
 
 	@Override
-	public List<JobDataDTO> getAllActiveJobData(Integer pageNo, Integer pageSize, String sortBy) {
+	public ResponseVO<List<JobDataDTO>> getAllActiveJobData(Integer pageNo, Integer pageSize, String sortBy) {
+		ResponseVO<List<JobDataDTO>> response=new ResponseVO<List<JobDataDTO>>();
 		List<JobDataDTO> responseData = new ArrayList<>();
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
 		List<JobData> jobData = jobDataRepository.findByStatus(true, paging);
@@ -119,7 +135,9 @@ public class JobServiceImpl implements JobService {
 			JobDataDTO jobDataDTO = mapper.convertValue(data, JobDataDTO.class);
 			responseData.add(jobDataDTO);
 		}
-		return responseData;
+		response.setStatus(200);
+		response.setBody(responseData);
+		return response;
 	}
 
 	@Override
@@ -134,20 +152,18 @@ public class JobServiceImpl implements JobService {
 					.contactNumber(jobApplyDTO.getContactNumber())
 					.password(CommonUtils.encode(jobApplyDTO.getPassword())).roles(roles).jobData(jobData).build();
 			user = userRepository.save(user);
-
 			byte[] bytes = resumeFile.getBytes();
 			Path path = Paths.get(UPLOADED_FOLDER +user.getEmailId()+"_"+jobData.getJobId()+"_"+resumeFile.getOriginalFilename());
 			Files.write(path, bytes);
-
 			String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/files/download/")
 					.path(user.getEmailId()+"_"+jobData.getJobId()+"_"+resumeFile.getOriginalFilename()).toUriString();
-
 			DocumentData documentData = DocumentData.builder().documentUrl(fileDownloadUri).user(user).build();
 			documentData = documentDataRepository.save(documentData);
 			jobApplyResponseDTO = JobApplyResponseDTO.builder().user(user).document(documentData).jobData(jobData)
 					.build();
 		} catch (Exception e) {
-
+			e.printStackTrace();
+			log.error("Error in saveJobApplyData for message :: {}", e.getMessage());
 		}
 		return jobApplyResponseDTO;
 	}
