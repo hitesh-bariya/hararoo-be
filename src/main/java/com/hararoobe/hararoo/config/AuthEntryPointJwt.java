@@ -2,8 +2,6 @@ package com.hararoobe.hararoo.config;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -19,8 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
-
-	private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
 	
 	@Autowired
     private ObjectMapper objectMapper;
@@ -29,20 +25,15 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) {
 		try {
-			
-			logger.error("Unauthorized error: {}", authException.getMessage());
-			//response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
 			sendErrorResponse(response);
-			//throw new Test("");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
 	
 	private void sendErrorResponse(HttpServletResponse response)
 			throws IOException {
-		ResponseVO<Object> responseVO = ResponseVO.builder().status(401).errorMsg("Unthentication error").build();
+		ResponseVO<Object> responseVO = ResponseVO.builder().status(401).errorMsg("Authentication error").build();
 		SecurityContextHolder.clearContext();
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setStatus(401);

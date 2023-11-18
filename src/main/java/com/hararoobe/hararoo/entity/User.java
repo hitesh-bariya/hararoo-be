@@ -42,6 +42,8 @@ public class User {
 	private String contactNumber;
 
 	private String password;
+	
+	private boolean emailVerified;
 
 	public User(String userName, String emailId,String contactNumber,String password) {
 		this.userName = userName;
@@ -52,6 +54,7 @@ public class User {
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@Builder.Default
 	private Set<Role> roles = new HashSet<>();
 	
 	

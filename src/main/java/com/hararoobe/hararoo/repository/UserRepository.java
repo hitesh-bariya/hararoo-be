@@ -10,9 +10,11 @@ import com.hararoobe.hararoo.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	Optional<User> findByUserName(String username);
+	Optional<User> findByEmailId(String username);
 
-	Boolean existsByEmailId(String emailId);
+	boolean existsByEmailId(String emailId);
+	
+	boolean existsByEmailIdAndPassword(String emailId,String password);
 
 
 }

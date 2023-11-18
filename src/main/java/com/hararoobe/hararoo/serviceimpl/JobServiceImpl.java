@@ -1,5 +1,8 @@
 package com.hararoobe.hararoo.serviceimpl;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,9 +17,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hararoobe.hararoo.common.CommonUtils;
 import com.hararoobe.hararoo.entity.DocumentData;
 import com.hararoobe.hararoo.entity.JobData;
 import com.hararoobe.hararoo.entity.Role;
@@ -53,6 +58,8 @@ public class JobServiceImpl implements JobService {
 
 	@Autowired
 	private DocumentDataRepository documentDataRepository;
+
+	private static final String UPLOADED_FOLDER = "src/main/resources/uploads/";
 
 	@Override
 	public JobDataDTO saveJob(JobDataDTO jobRequestDTO) {
@@ -116,22 +123,32 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public JobApplyResponseDTO saveJobApplyData(JobApplyDTO jobApplyDTO,MultipartFile resumeFile) {
-		Set<Role> roles = new HashSet<>();
-		Optional<Role> role = roleRepository.findByName(ERole.ROLE_USER);
-		roles.add(role.get());
-		JobData jobData = jobDataRepository.findById(jobApplyDTO.getJobId()).get();
-		User user = User.builder().userName(jobApplyDTO.getUserName()).emailId(jobApplyDTO.getEmailId())
-				.contactNumber(jobApplyDTO.getContactNumber()).password(encoder.encode(jobApplyDTO.getPassword()))
-				.roles(roles).jobData(jobData).build();
-		user = userRepository.save(user);
+	public JobApplyResponseDTO saveJobApplyData(JobApplyDTO jobApplyDTO, MultipartFile resumeFile) {
+		JobApplyResponseDTO jobApplyResponseDTO = new JobApplyResponseDTO();
+		try {
+			Set<Role> roles = new HashSet<>();
+			Optional<Role> role = roleRepository.findByName(ERole.ROLE_USER);
+			roles.add(role.get());
+			JobData jobData = jobDataRepository.findById(jobApplyDTO.getJobId()).get();
+			User user = User.builder().userName(jobApplyDTO.getUserName()).emailId(jobApplyDTO.getEmailId())
+					.contactNumber(jobApplyDTO.getContactNumber())
+					.password(CommonUtils.encode(jobApplyDTO.getPassword())).roles(roles).jobData(jobData).build();
+			user = userRepository.save(user);
 
-		DocumentData documentData = DocumentData.builder().documentUrl("").user(user).build();
-		documentData = documentDataRepository.save(documentData);
+			byte[] bytes = resumeFile.getBytes();
+			Path path = Paths.get(UPLOADED_FOLDER +user.getEmailId()+"_"+jobData.getJobId()+"_"+resumeFile.getOriginalFilename());
+			Files.write(path, bytes);
 
-		JobApplyResponseDTO jobApplyResponseDTO = JobApplyResponseDTO.builder().user(user).document(documentData)
-				.jobData(jobData).build();
+			String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/files/download/")
+					.path(user.getEmailId()+"_"+jobData.getJobId()+"_"+resumeFile.getOriginalFilename()).toUriString();
 
+			DocumentData documentData = DocumentData.builder().documentUrl(fileDownloadUri).user(user).build();
+			documentData = documentDataRepository.save(documentData);
+			jobApplyResponseDTO = JobApplyResponseDTO.builder().user(user).document(documentData).jobData(jobData)
+					.build();
+		} catch (Exception e) {
+
+		}
 		return jobApplyResponseDTO;
 	}
 
