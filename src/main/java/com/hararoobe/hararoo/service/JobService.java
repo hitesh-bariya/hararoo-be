@@ -23,4 +23,6 @@ public interface JobService {
 	ResponseVO<List<JobDataDTO>> getAllActiveJobData(Integer pageNo,Integer pageSize,String sortBy);
 	
 	public JobApplyResponseDTO saveJobApplyData(JobApplyDTO jobApplyDTO,MultipartFile resumeFile);
+	
+	public JobDataDTO getJobById(Long jobId);
 }

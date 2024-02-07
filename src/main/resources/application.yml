@@ -1,5 +1,5 @@
 server:
-  port: 8001
+  port: 8000
 
 
 spring:
@@ -15,6 +15,17 @@ spring:
     static-path-pattern: /uploads/**
   resources:
     static-locations: file:src/main/resources/uploads/
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: hiteshbariya310@gmail.com
+    password: plpi cxbm qzxa arpt
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 aws:
   cloud:

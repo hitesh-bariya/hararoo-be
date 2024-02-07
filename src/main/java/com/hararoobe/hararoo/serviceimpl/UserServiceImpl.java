@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,9 @@ public class UserServiceImpl implements UserService {
 	private JwtUtils jwtUtils;
 
 	@Autowired
+	private JavaMailSender javaMailSender;
+
+	@Autowired
 	private OtpDataRepository otpDataRepository;
 
 	@Override
@@ -52,7 +57,6 @@ public class UserServiceImpl implements UserService {
 	public UserDetails loadUserByUserName(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByEmailId(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
-
 		return UserDetailsImpl.build(user);
 	}
 
@@ -148,7 +152,6 @@ public class UserServiceImpl implements UserService {
 				response.setMessage("EmailId not found");
 				return response;
 			}
-
 			Boolean existsEmailWithPassword = userRepository.existsByEmailIdAndPassword(loginRequest.getEmailId(),
 					CommonUtils.encode(loginRequest.getPassword()));
 			if (!existsEmailWithPassword) {
@@ -162,9 +165,17 @@ public class UserServiceImpl implements UserService {
 			otpData.setEmailId(loginRequest.getEmailId());
 			otpData.setOtpCode(randomNumber);
 			otpDataRepository.save(otpData);
+
+			/*SimpleMailMessage message = new SimpleMailMessage();
+			message.setTo("hitubariya310@gmail.com");
+			message.setSubject("TEST");
+			message.setText("ONE TIME PASSWORD :: "+randomNumber);
+
+			javaMailSender.send(message);*/
+
 			response.setBody(String.valueOf(randomNumber));
 		} catch (Exception e) {
-			log.error("General Errorn in generateEmailVerifyOtp for :: ", e.getMessage());
+			log.error("General Error in generateEmailVerifyOtp for :: ", e.getMessage());
 		}
 		return response;
 	}
@@ -186,7 +197,7 @@ public class UserServiceImpl implements UserService {
 				}
 			} else {
 				response.setStatus(200);
-				response.setMessage("Invlid OTP");
+				response.setMessage("Invalid OTP");
 			}
 		} catch (Exception e) {
 			log.error("General Errorn in verifyOtp for :: ", e.getMessage());

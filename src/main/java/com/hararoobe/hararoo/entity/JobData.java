@@ -31,6 +31,8 @@ public class JobData {
 	
 	private String jobTitle;
 	
+	private String jobType;
+	
 	private String location;
 	
 	private String sector;

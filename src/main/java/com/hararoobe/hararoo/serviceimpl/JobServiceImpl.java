@@ -133,6 +133,7 @@ public class JobServiceImpl implements JobService {
 		List<JobData> jobData = jobDataRepository.findByStatus(true, paging);
 		for (JobData data : jobData) {
 			JobDataDTO jobDataDTO = mapper.convertValue(data, JobDataDTO.class);
+			jobDataDTO.setImg("https://www.gstatic.com/webp/gallery/1.jpg");
 			responseData.add(jobDataDTO);
 		}
 		response.setStatus(200);
@@ -166,6 +167,15 @@ public class JobServiceImpl implements JobService {
 			log.error("Error in saveJobApplyData for message :: {}", e.getMessage());
 		}
 		return jobApplyResponseDTO;
+	}
+
+	@Override
+	public JobDataDTO getJobById(Long jobId) {
+		Optional<JobData> jobData=jobDataRepository.findById(jobId);
+		
+		JobDataDTO jobDataDTO = mapper.convertValue(jobData.get(), JobDataDTO.class);
+		jobDataDTO.setImg("https://www.gstatic.com/webp/gallery/1.jpg");
+		return jobDataDTO;
 	}
 
 }

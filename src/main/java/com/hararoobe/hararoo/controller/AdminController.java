@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +43,7 @@ public class AdminController {
 	}
 
 	@GetMapping("/update-job-status")
-	public ResponseVO<JobDataDTO> updateJobStatus(@RequestParam("status") Long jobId,
+	public ResponseVO<JobDataDTO> updateJobStatus(@RequestParam("jobId") Long jobId,
 			@RequestParam("status") boolean status) {
 		log.info("Calling Contoller for updateJobStatus method");
 		return jobService.updateJobStatus(jobId, status);
@@ -62,5 +63,11 @@ public class AdminController {
 			@RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "jobId") String sortBy) {
 		log.info("Calling Contoller for getAllActivemJobs mrthod");
 		return ResponseVO.builder().status(201).body(jobService.getAllActiveJobData(pageNo, pageSize, sortBy)).build();
+	}
+	
+	@GetMapping("/job-by-id/{jobId}")
+	public ResponseVO<?> getJobById(@PathVariable Long jobId) {
+		log.info("Calling Contoller for getAllActivemJobs mrthod");
+		return ResponseVO.builder().status(201).body(jobService.getJobById(jobId)).build();
 	}
 }

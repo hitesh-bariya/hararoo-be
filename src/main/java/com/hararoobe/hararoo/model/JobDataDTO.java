@@ -10,26 +10,33 @@ import lombok.NoArgsConstructor;
 public class JobDataDTO {
 
 	private Long jobId;
-	
+
 	private String jobTitle;
-	
+
+	private String jobType;
+
+	private String img;
+
 	private String location;
-	
+
 	private String sector;
-	
+
 	private String subSector;
-	
+
 	private String industrialName;
-	
+
 	private String contractType;
-	
+
 	private String consultant;
-	
+
 	private String jobReferences;
-	
+
 	private String jobNature;
-	
+
 	private boolean status;
-	
+
 	private String jobDescription;
+
+	private String createdAt;
+
 }

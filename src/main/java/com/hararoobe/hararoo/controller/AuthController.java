@@ -19,11 +19,9 @@ import com.hararoobe.hararoo.service.UserService;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-	
-	
+
 	@Autowired
 	UserService userService;
-
 
 	@PostMapping("/signin")
 	public ResponseVO<String> registeredUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -41,8 +39,7 @@ public class AuthController {
 	}
 
 	@GetMapping("/email/verify")
-	public ResponseVO<String> verifyOtp(@RequestHeader("emailId") String emailId,
-			@RequestHeader("otp") Long otp) {
+	public ResponseVO<String> verifyOtp(@RequestHeader("emailId") String emailId, @RequestHeader("otp") Long otp) {
 		return userService.verifyOtp(emailId, otp);
 	}
 

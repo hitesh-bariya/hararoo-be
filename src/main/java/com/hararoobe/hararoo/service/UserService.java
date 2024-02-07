@@ -3,7 +3,6 @@ package com.hararoobe.hararoo.service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.hararoobe.hararoo.model.LoginRequest;
 import com.hararoobe.hararoo.model.ResponseVO;
@@ -19,5 +18,5 @@ public interface UserService {
 
 	ResponseVO<String> generateEmailVerifyOtp(LoginRequest loginRequest);
 
-	ResponseVO<String> verifyOtp(@RequestHeader("emailId") String emailId, @RequestHeader("otp") Long otp);
+	ResponseVO<String> verifyOtp(String emailId,Long otp);
 }
